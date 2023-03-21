@@ -1,8 +1,5 @@
 package com.reactnativeyandexmobileads;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -35,19 +32,16 @@ public class InterstitialAdManager extends ReactContextBaseJavaModule implements
       p.reject("E_FAILED_TO_SHOW", "Only one `showAd` can be called at once");
       return;
     }
-    Handler mainHandler = new Handler(Looper.getMainLooper());
-    Runnable myRunnable = () -> {
-      ReactApplicationContext reactContext = getReactApplicationContext();
-      mInterstitial = new InterstitialAd(reactContext);
-      mInterstitial.setAdUnitId(adUnitId);
-      mInterstitial.setInterstitialAdEventListener(this);
-      mInterstitial.loadAd(new AdRequest.Builder().build());
-    };
+
+    ReactApplicationContext reactContext = this.getReactApplicationContext();
+    mInterstitial = new InterstitialAd(reactContext);
+    mInterstitial.setAdUnitId(adUnitId);
+    mInterstitial.setInterstitialAdEventListener(this);
 
     mViewAtOnce = true;
     mPromise = p;
 
-    mainHandler.post(myRunnable);
+    mInterstitial.loadAd(new AdRequest.Builder().build());
   }
 
   @Override
