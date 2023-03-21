@@ -20,16 +20,16 @@ public class MobileAdsModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void initialize(ReadableMap configuration) {
-    Handler mainHandler = new Handler(getReactApplicationContext().getMainLooper());
-    Runnable myRunnable = () -> MobileAds.initialize(getReactApplicationContext(), () -> {
-      MobileAds.initialize(getReactApplicationContext(), () -> {
+  public void initialize(ReadableMap configuration, Promise promise) {
+    MobileAds.initialize(getReactApplicationContext(), new InitializationListener() {
+      @Override
+      public void onInitializationCompleted() {
         MobileAds.setUserConsent(configuration.getBoolean("userConsent"));
         MobileAds.setLocationConsent(configuration.getBoolean("locationConsent"));
         MobileAds.enableLogging(configuration.getBoolean("enableLogging"));
         MobileAds.enableDebugErrorIndicator(configuration.getBoolean("enableDebugErrorIndicator"));
-      });
+		promise.resolve(true);
+      }
     });
-    mainHandler.post(myRunnable);
   }
 }
